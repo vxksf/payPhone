@@ -3,6 +3,7 @@ import { FaleMaisCalculationModel } from '../../../domain/models/fale-mais-calcu
 import { Plan } from '../../../domain/plans/plans'
 import { CalculateCallController } from './calculate-call'
 import { HttpRequest } from './calculate-protocols'
+import { serverError } from '../../helpers/http/http-helper'
 
 const makeFaleMaisCalculator = (): FaleMaisCalculator => {
   class FaleMaisCalculatorStub implements FaleMaisCalculator {
@@ -47,5 +48,12 @@ describe('CalculateCall Controller', () => {
       callTime: 40,
       plan: Plan.FALEMAIS30
     })
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { sut, faleMaisCalculatorStub } = makeSut()
+    jest.spyOn(faleMaisCalculatorStub, 'calculate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
