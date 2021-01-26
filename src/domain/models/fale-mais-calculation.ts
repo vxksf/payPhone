@@ -1,6 +1,6 @@
 export interface FaleMaisCalculationModel {
-  originCode: number
-  destinationCode: number
+  originCode: string
+  destinationCode: string
   callTime: number
   plan: string
 }
