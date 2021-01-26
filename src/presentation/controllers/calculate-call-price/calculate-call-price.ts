@@ -1,18 +1,18 @@
-import { FaleMaisCalculator } from '../../../domain/usecases/fale-mais-calculator'
+import { CallPriceCalculator } from '../../../domain/usecases/call-price-calculator'
 import { Controller, HttpRequest, HttpResponse } from './calculate-protocols'
 import { serverError, ok } from '../../helpers/http/http-helper'
 
 export class CalculateCallController implements Controller {
-  private readonly faleMaiscalculator: FaleMaisCalculator
+  private readonly callPriceCalculator: CallPriceCalculator
 
-  constructor (faleMaiscalculator: FaleMaisCalculator) {
-    this.faleMaiscalculator = faleMaiscalculator
+  constructor (callPriceCalculator: CallPriceCalculator) {
+    this.callPriceCalculator = callPriceCalculator
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { originCode, destinationCode, callTime, plan } = httpRequest.body
-      const calculated = await this.faleMaiscalculator.calculate({
+      const calculated = await this.callPriceCalculator.calculate({
         originCode,
         destinationCode,
         callTime,

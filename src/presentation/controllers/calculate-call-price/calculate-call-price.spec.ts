@@ -1,17 +1,17 @@
-import { FaleMaisCalculator } from '../../../domain/usecases/fale-mais-calculator'
-import { FaleMaisCalculationModel } from '../../../domain/models/fale-mais-calculation'
+import { CallPriceCalculator } from '../../../domain/usecases/call-price-calculator'
+import { CallPriceCalculationModel } from '../../../domain/models/call-price-calculation'
 import { Plan } from '../../../domain/plans/plans'
-import { CalculateCallController } from './calculate-call'
+import { CalculateCallController } from './calculate-call-price'
 import { HttpRequest } from './calculate-protocols'
 import { serverError, ok } from '../../helpers/http/http-helper'
 
-const makeFaleMaisCalculator = (): FaleMaisCalculator => {
-  class FaleMaisCalculatorStub implements FaleMaisCalculator {
-    async calculate (data: FaleMaisCalculationModel): Promise<number> {
+const makeCallPriceCalculator = (): CallPriceCalculator => {
+  class CallPriceCalculatorStub implements CallPriceCalculator {
+    async calculate (data: CallPriceCalculationModel): Promise<number> {
       return new Promise(resolve => resolve(20.9))
     }
   }
-  return new FaleMaisCalculatorStub()
+  return new CallPriceCalculatorStub()
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -25,22 +25,22 @@ const makeFakeRequest = (): HttpRequest => ({
 
 interface SutTypes {
   sut: CalculateCallController
-  faleMaisCalculatorStub: FaleMaisCalculator
+  callPriceCalculatorStub: CallPriceCalculator
 }
 
 const makeSut = (): SutTypes => {
-  const faleMaisCalculatorStub = makeFaleMaisCalculator()
-  const sut = new CalculateCallController(faleMaisCalculatorStub)
+  const callPriceCalculatorStub = makeCallPriceCalculator()
+  const sut = new CalculateCallController(callPriceCalculatorStub)
   return {
     sut,
-    faleMaisCalculatorStub
+    callPriceCalculatorStub
   }
 }
 
 describe('CalculateCall Controller', () => {
-  test('Should call FaleMaisCalculator with correct values', async () => {
-    const { sut, faleMaisCalculatorStub } = makeSut()
-    const calculatorSpy = jest.spyOn(faleMaisCalculatorStub, 'calculate')
+  test('Should call CallPriceCalculator with correct values', async () => {
+    const { sut, callPriceCalculatorStub } = makeSut()
+    const calculatorSpy = jest.spyOn(callPriceCalculatorStub, 'calculate')
     await sut.handle(makeFakeRequest())
     expect(calculatorSpy).toHaveBeenCalledWith({
       originCode: '011',
@@ -51,8 +51,8 @@ describe('CalculateCall Controller', () => {
   })
 
   test('Should return 500 if Authentication throws', async () => {
-    const { sut, faleMaisCalculatorStub } = makeSut()
-    jest.spyOn(faleMaisCalculatorStub, 'calculate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const { sut, callPriceCalculatorStub } = makeSut()
+    jest.spyOn(callPriceCalculatorStub, 'calculate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
