@@ -3,12 +3,12 @@ import { FaleMaisCalculationModel } from '../../../domain/models/fale-mais-calcu
 import { Plan } from '../../../domain/plans/plans'
 import { CalculateCallController } from './calculate-call'
 import { HttpRequest } from './calculate-protocols'
-import { serverError } from '../../helpers/http/http-helper'
+import { serverError, ok } from '../../helpers/http/http-helper'
 
 const makeFaleMaisCalculator = (): FaleMaisCalculator => {
   class FaleMaisCalculatorStub implements FaleMaisCalculator {
     async calculate (data: FaleMaisCalculationModel): Promise<number> {
-      return new Promise(resolve => resolve(0.0))
+      return new Promise(resolve => resolve(20.9))
     }
   }
   return new FaleMaisCalculatorStub()
@@ -16,8 +16,8 @@ const makeFaleMaisCalculator = (): FaleMaisCalculator => {
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
-    originCode: 11,
-    destinationCode: 31,
+    originCode: '011',
+    destinationCode: '016',
     callTime: 40,
     plan: Plan.FALEMAIS30
   }
@@ -43,8 +43,8 @@ describe('CalculateCall Controller', () => {
     const calculatorSpy = jest.spyOn(faleMaisCalculatorStub, 'calculate')
     await sut.handle(makeFakeRequest())
     expect(calculatorSpy).toHaveBeenCalledWith({
-      originCode: 11,
-      destinationCode: 31,
+      originCode: '011',
+      destinationCode: '016',
       callTime: 40,
       plan: Plan.FALEMAIS30
     })
@@ -55,5 +55,11 @@ describe('CalculateCall Controller', () => {
     jest.spyOn(faleMaisCalculatorStub, 'calculate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 200 if calculation was done successfully', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok({ calculated: 20.9 }))
   })
 })
