@@ -3,5 +3,5 @@ import { CallFeeModel } from '../../../domain/models/call-fee'
 
 export interface FeeRepository extends Repository {
   getDDDFee (originCode: string, destinationCode: string): Promise<number>
-  add(data: CallFeeModel): void
+  add (data: CallFeeModel): Promise<CallFeeModel>
 }
