@@ -8,5 +8,6 @@ export class CalculateCallPrice implements CallPriceCalculator {
     const service = CalculatorFactory.fromPlanType(data.plan)
     service.setData(data)
     service.setRepository(new MongoRepository())
+    return await service.calculate()
   }
 }

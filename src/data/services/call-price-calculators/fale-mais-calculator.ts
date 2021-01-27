@@ -1,10 +1,12 @@
 import { GeneralCallPriceCalculator } from './general-call-price-calculator'
+import { Plan } from '../../../domain/plans/plans'
 
 export class FaleMaisCalculator extends GeneralCallPriceCalculator {
-  calculate (): number {
-    let result = this.data.time - 30
+  async calculate (): Promise<number> {
+    const timePack = this.getTimePacketByPlan(this.data.plan)
+    let result = this.data.time - timePack
     if (result > 0) {
-      const fee = this.feeRepository.getDDDFee(this.data.originCode, this.data.destinationCode)
+      const fee = this.repository.getDDDFee(this.data.originCode, this.data.destinationCode)
       result *= fee
       const extra = result * 0.1
       result += extra
@@ -13,5 +15,16 @@ export class FaleMaisCalculator extends GeneralCallPriceCalculator {
     }
 
     return result
+  }
+
+  private getTimePacketByPlan (plan: number): number {
+    switch (plan) {
+      case Plan.FALEMAIS30:
+        return 30
+      case Plan.FALEMAIS60:
+        return 60
+      case Plan.FALEMAIS120:
+        return 120
+    }
   }
 }
