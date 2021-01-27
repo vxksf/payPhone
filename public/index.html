@@ -1,11 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>uHost Signup</title>
+    <link href="https://fonts.googleapis.com/css?family=Anton|Montserrat:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/forms.css">
 </head>
+
 <body>
-    
+    <div class="backdrop"></div>
+    <header class="main-header">
+        <div>
+            <button class="toggle-button">
+                <span class="toggle-button__bar"></span>
+                <span class="toggle-button__bar"></span>
+                <span class="toggle-button__bar"></span>
+            </button>
+            <a href="#" class="main-header__brand">
+                <p>VxTel - Aquela ligação inesquecível</p>
+            </a>
+        </div>
+    </header>
+    <main class="signup-page">
+        <p class="signup-title">Defina as informações nos campos e clique no botão para saber o preço da sua ligação</p>
+        <form action="index.html" class="signup-form">
+            <label for="originCode">Código de origem</label>
+            <select id="originCode">
+                <option value="011">011</option>
+                <option value="016">016</option>
+                <option value="017">017</option>
+                <option value="018">018</option>
+            </select>
+
+            <label for="destinationCode">Código de destino</label>
+            <select id="destinationCode">
+                <option value="011">011</option>
+                <option value="016">016</option>
+                <option value="017">017</option>
+                <option value="018">018</option>
+            </select>
+
+            <label for="callTime">Tempo da ligação</label>
+            <input type="text" id="callTime">
+
+            <label for="plan">Tipo do Plano</label>
+            <select id="plan">
+                <option value="1">Tradicional</option>
+                <option value="2">FaleMais 30</option>
+                <option value="3">FaleMais 60</option>
+                <option value="4">FaleMais 120</option>
+            </select>
+
+            <button type="submit" class="button">Calcular</button>
+        </form>
+    </main>
+    <footer class="main-footer">
+        <nav>
+            <ul class="main-footer__links">
+                <li class="main-footer__link">
+                    <a href="#">Support</a>
+                </li>
+                <li class="main-footer__link">
+                    <a href="#">Terms of Use</a>
+                </li>
+            </ul>
+        </nav>
+    </footer>
 </body>
+
 </html>
