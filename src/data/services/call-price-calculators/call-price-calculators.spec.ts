@@ -63,7 +63,7 @@ describe('CallPriceCalculatorService', () => {
 
   test('Should setData with correct values in TraditionalCallCalculator', async () => {
     const { traditionalCallCalculator } = makeSut()
-    const setDataSpy = spyOn(traditionalCallCalculator, 'setData')
+    const setDataSpy = jest.spyOn(traditionalCallCalculator, 'setData')
     traditionalCallCalculator.setData(makeFakeTraditionalData())
     expect(setDataSpy).toHaveBeenCalledWith({
       originCode: '011',
@@ -76,7 +76,7 @@ describe('CallPriceCalculatorService', () => {
   test('Should setRepository with correct value in TraditionalCallCalculator', async () => {
     const { traditionalCallCalculator } = makeSut()
     traditionalCallCalculator.setData(makeFakeTraditionalData())
-    const setRepositorySpy = spyOn(traditionalCallCalculator, 'setRepository')
+    const setRepositorySpy = jest.spyOn(traditionalCallCalculator, 'setRepository')
     traditionalCallCalculator.setRepository(new MongoRepository())
     expect(setRepositorySpy).toHaveBeenCalledWith(new MongoRepository())
   })
@@ -91,7 +91,7 @@ describe('CallPriceCalculatorService', () => {
 
   test('Should setData with correct values in FaleMaisCallCalculator', async () => {
     const { faleMaisCallCalculator } = makeSut()
-    const setDataSpy = spyOn(faleMaisCallCalculator, 'setData')
+    const setDataSpy = jest.spyOn(faleMaisCallCalculator, 'setData')
     faleMaisCallCalculator.setData(makeFaleMaisTraditionalData())
     expect(setDataSpy).toHaveBeenCalledWith({
       originCode: '011',
@@ -104,7 +104,7 @@ describe('CallPriceCalculatorService', () => {
   test('Should setRepository with correct value in FaleMaisCallCalculator', async () => {
     const { faleMaisCallCalculator } = makeSut()
     faleMaisCallCalculator.setData(makeFaleMaisTraditionalData())
-    const setRepositorySpy = spyOn(faleMaisCallCalculator, 'setRepository')
+    const setRepositorySpy = jest.spyOn(faleMaisCallCalculator, 'setRepository')
     faleMaisCallCalculator.setRepository(new MongoRepository())
     expect(setRepositorySpy).toHaveBeenCalledWith(new MongoRepository())
   })
