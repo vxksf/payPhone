@@ -1,9 +1,24 @@
 import { TraditionalCallCalculator, FaleMaisCallCalculator } from './index'
 import { Plan } from '../../../domain/plans/plans'
 import { CallFeeModel } from '../../../domain/models/call-fee'
+import { CallPriceCalculationModel } from '../../../domain/models/call-price-calculation'
 import { MongoRepository } from '../../../infra/db/mongodb/mongo-repository'
 import { MongoHelper } from '../../../infra/db/helpers/mongo-helper'
 import { EnvManager } from '../../../infra/env/env-manager'
+
+const makeFakeTraditionalData = (): CallPriceCalculationModel => ({
+  originCode: '011',
+  destinationCode: '016',
+  callTime: 40,
+  plan: Plan.TRADITIONAL
+})
+
+const makeFaleMaisTraditionalData = (): CallPriceCalculationModel => ({
+  originCode: '011',
+  destinationCode: '016',
+  callTime: 40,
+  plan: Plan.FALEMAIS30
+})
 
 interface SutType {
   faleMaisCallCalculator: FaleMaisCallCalculator
@@ -46,27 +61,57 @@ describe('CallPriceCalculatorService', () => {
     await MongoHelper.disconnect()
   })
 
-  test('Should return correct calculation in TraditionalCallCalculator', async () => {
+  test('Should setData with correct values in TraditionalCallCalculator', async () => {
     const { traditionalCallCalculator } = makeSut()
-    traditionalCallCalculator.setData({
+    const setDataSpy = spyOn(traditionalCallCalculator, 'setData')
+    traditionalCallCalculator.setData(makeFakeTraditionalData())
+    expect(setDataSpy).toHaveBeenCalledWith({
       originCode: '011',
       destinationCode: '016',
       callTime: 40,
       plan: Plan.TRADITIONAL
     })
+  })
+
+  test('Should setRepository with correct value in TraditionalCallCalculator', async () => {
+    const { traditionalCallCalculator } = makeSut()
+    traditionalCallCalculator.setData(makeFakeTraditionalData())
+    const setRepositorySpy = spyOn(traditionalCallCalculator, 'setRepository')
+    traditionalCallCalculator.setRepository(new MongoRepository())
+    expect(setRepositorySpy).toHaveBeenCalledWith(new MongoRepository())
+  })
+
+  test('Should return correct calculation in TraditionalCallCalculator', async () => {
+    const { traditionalCallCalculator } = makeSut()
+    traditionalCallCalculator.setData(makeFakeTraditionalData())
     traditionalCallCalculator.setRepository(new MongoRepository())
     const calculation = await traditionalCallCalculator.calculate()
     expect(calculation).toEqual(76.0)
   })
 
-  test('Should return correct calculation in FaleMaisCallCalculator for plan FaleMais 30', async () => {
+  test('Should setData with correct values in FaleMaisCallCalculator', async () => {
     const { faleMaisCallCalculator } = makeSut()
-    faleMaisCallCalculator.setData({
+    const setDataSpy = spyOn(faleMaisCallCalculator, 'setData')
+    faleMaisCallCalculator.setData(makeFaleMaisTraditionalData())
+    expect(setDataSpy).toHaveBeenCalledWith({
       originCode: '011',
       destinationCode: '016',
       callTime: 40,
       plan: Plan.FALEMAIS30
     })
+  })
+
+  test('Should setRepository with correct value in FaleMaisCallCalculator', async () => {
+    const { faleMaisCallCalculator } = makeSut()
+    faleMaisCallCalculator.setData(makeFaleMaisTraditionalData())
+    const setRepositorySpy = spyOn(faleMaisCallCalculator, 'setRepository')
+    faleMaisCallCalculator.setRepository(new MongoRepository())
+    expect(setRepositorySpy).toHaveBeenCalledWith(new MongoRepository())
+  })
+
+  test('Should return correct calculation in FaleMaisCallCalculator for plan FaleMais 30', async () => {
+    const { faleMaisCallCalculator } = makeSut()
+    faleMaisCallCalculator.setData(makeFaleMaisTraditionalData())
     faleMaisCallCalculator.setRepository(new MongoRepository())
     const calculation = await faleMaisCallCalculator.calculate()
     expect(calculation).toEqual(20.9)
