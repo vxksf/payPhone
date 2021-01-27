@@ -1,6 +1,6 @@
 import { CallPriceCalculationModel } from '../../../domain/models/call-price-calculation'
 import { CallPriceCalculator } from '../../../domain/usecases/call-price-calculator'
-import { CalculatorFactory } from '../../factories/calculator-factorie'
+import { CalculatorFactory } from '../../factories/calculator-factory'
 import { MongoRepository } from '../../../infra/db/mongodb/mongo-repository'
 
 export class CalculateCallPrice implements CallPriceCalculator {
