@@ -71,4 +71,30 @@ describe('CallPriceCalculatorService', () => {
     const calculation = await faleMaisCallCalculator.calculate()
     expect(calculation).toEqual(20.9)
   })
+
+  test('Should return correct calculation in FaleMaisCallCalculator for plan FaleMais 60', async () => {
+    const { faleMaisCallCalculator } = makeSut()
+    faleMaisCallCalculator.setData({
+      originCode: '011',
+      destinationCode: '017',
+      callTime: 70,
+      plan: Plan.FALEMAIS60
+    })
+    faleMaisCallCalculator.setRepository(new MongoRepository())
+    const calculation = await faleMaisCallCalculator.calculate()
+    expect(calculation).toEqual(18.7)
+  })
+
+  test('Should return correct calculation in FaleMaisCallCalculator for plan FaleMais 120', async () => {
+    const { faleMaisCallCalculator } = makeSut()
+    faleMaisCallCalculator.setData({
+      originCode: '011',
+      destinationCode: '018',
+      callTime: 130,
+      plan: Plan.FALEMAIS120
+    })
+    faleMaisCallCalculator.setRepository(new MongoRepository())
+    const calculation = await faleMaisCallCalculator.calculate()
+    expect(calculation).toEqual(9.9)
+  })
 })
