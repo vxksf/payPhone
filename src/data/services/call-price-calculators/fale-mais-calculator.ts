@@ -4,9 +4,9 @@ import { Plan } from '../../../domain/plans/plans'
 export class FaleMaisCalculator extends GeneralCallPriceCalculator {
   async calculate (): Promise<number> {
     const timePack = this.getTimePacketByPlan(this.data.plan)
-    let result = this.data.time - timePack
+    let result = this.data.callTime - timePack
     if (result > 0) {
-      const fee = this.repository.getDDDFee(this.data.originCode, this.data.destinationCode)
+      const fee = await this.repository.getDDDFee(this.data.originCode, this.data.destinationCode)
       result *= fee
       const extra = result * 0.1
       result += extra

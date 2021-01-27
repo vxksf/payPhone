@@ -1,10 +1,10 @@
 import { CallPriceCalculationModel } from '../../../domain/models/call-price-calculation'
+import { CallFeeModel } from '../../../domain/models/call-fee'
 import { Plan } from '../../../domain/plans/plans'
-import { CalculateCallPrice } from './calculate-call-price'
-import { CallPriceCalculatorService } from '../../../domain/services/call-price-calculator-service'
-import { GeneralCallPriceCalculator } from '../../services/call-price-calculators/general-call-price-calculator'
 import { MongoHelper } from '../../../infra/db/helpers/mongo-helper'
+import { MongoRepository } from '../../../infra/db/mongodb/mongo-repository'
 import { EnvManager } from '../../../infra/env/env-manager'
+import { CalculateCallPrice } from './calculate-call-price'
 
 const makeFakeFaleMaisRequest = (): CallPriceCalculationModel => ({
   originCode: '011',
@@ -20,48 +20,26 @@ const makeFakeTraditionalRequest = (): CallPriceCalculationModel => ({
   plan: Plan.TRADITIONAL
 })
 
-const makeFaleMaisCalculatorStub = (): CallPriceCalculatorService => {
-  class FaleMaisCalculatorStub extends GeneralCallPriceCalculator {
-    async calculate (): Promise<number> {
-      const timePack = this.getTimePacketByPlan(this.data.plan)
-      let result = this.data.time - timePack
-      if (result > 0) {
-        const fee = this.repository.getDDDFee(this.data.originCode, this.data.destinationCode)
-        result *= fee
-        const extra = result * 0.1
-        result += extra
-      } else {
-        result = 0.0
-      }
-
-      return result
-    }
-
-    private getTimePacketByPlan (plan: number): number {
-      switch (plan) {
-        case Plan.FALEMAIS30:
-          return 30
-        case Plan.FALEMAIS60:
-          return 60
-        case Plan.FALEMAIS120:
-          return 120
-      }
-    }
-  }
-  return new FaleMaisCalculatorStub()
-}
-
 interface SutTypes {
   sut: CalculateCallPrice
-  faleMaisCalculatorStub: CallPriceCalculatorService
 }
 
 const makeSut = (): SutTypes => {
-  const faleMaisCalculatorStub = makeFaleMaisCalculatorStub()
   const sut = new CalculateCallPrice()
-  return {
-    sut,
-    faleMaisCalculatorStub
+  return { sut }
+}
+
+const populateDatabase = async (): Promise<void> => {
+  const fees: CallFeeModel[] = []
+  fees[0] = { originCode: '011', destinationCode: '016', minutePrice: 1.9 }
+  fees[1] = { originCode: '016', destinationCode: '011', minutePrice: 2.9 }
+  fees[2] = { originCode: '011', destinationCode: '017', minutePrice: 1.7 }
+  fees[3] = { originCode: '017', destinationCode: '011', minutePrice: 2.7 }
+  fees[4] = { originCode: '011', destinationCode: '018', minutePrice: 0.9 }
+  fees[5] = { originCode: '018', destinationCode: '011', minutePrice: 1.9 }
+  const mongoRepository = new MongoRepository()
+  for (const fee of fees) {
+    await mongoRepository.add(fee)
   }
 }
 
@@ -69,9 +47,12 @@ describe('CalculateCallPrice UseCase', () => {
   beforeAll(async () => {
     const envManager = new EnvManager()
     await MongoHelper.connect(envManager.getEnvMongoUrl())
+    await populateDatabase()
   })
 
   afterAll(async () => {
+    const feeCollection = await MongoHelper.getCollection('fees')
+    await feeCollection.deleteMany({})
     await MongoHelper.disconnect()
   })
 
@@ -101,8 +82,35 @@ describe('CalculateCallPrice UseCase', () => {
 
   test('Should return correct value for FaleMais 30 calculation', async () => {
     const { sut } = makeSut()
-    const calculateCallPriceSpy = jest.spyOn(sut, 'calculate')
-    await sut.calculate(makeFakeFaleMaisRequest())
-    expect(calculateCallPriceSpy).toHaveReturned()
+    const fee = await sut.calculate(makeFakeFaleMaisRequest())
+    expect(fee).toEqual(20.9)
+  })
+
+  test('Should return correct value for FaleMais 60 calculation', async () => {
+    const { sut } = makeSut()
+    const fee = await sut.calculate({
+      originCode: '011',
+      destinationCode: '017',
+      callTime: 70,
+      plan: Plan.FALEMAIS60
+    })
+    expect(fee).toEqual(18.7)
+  })
+
+  test('Should return correct value for FaleMais 120 calculation', async () => {
+    const { sut } = makeSut()
+    const fee = await sut.calculate({
+      originCode: '011',
+      destinationCode: '018',
+      callTime: 130,
+      plan: Plan.FALEMAIS120
+    })
+    expect(fee).toEqual(9.9)
+  })
+
+  test('Should return correct value for Traditional calculation', async () => {
+    const { sut } = makeSut()
+    const fee = await sut.calculate(makeFakeTraditionalRequest())
+    expect(fee).toEqual(76.0)
   })
 })
