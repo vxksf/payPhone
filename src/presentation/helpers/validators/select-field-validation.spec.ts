@@ -5,7 +5,7 @@ describe('SelectFieldValidation', () => {
   test('Should return a InvalidParamError if originCode is invalid', () => {
     const sut = new SelectFieldValidation(['011', '016', '017', '018'], 'originCode')
     const error = sut.validate({ originCode: '019' })
-    expect(error).toEqual(new InvalidParamError('originCode'))
+    expect(error).toEqual(new InvalidParamError('019'))
   })
 
   test('Should not return if validation succeeds for selected originCode', () => {
@@ -17,7 +17,7 @@ describe('SelectFieldValidation', () => {
   test('Should return a InvalidParamError if destinationCode is invalid', () => {
     const sut = new SelectFieldValidation(['011', '016', '017', '018'], 'destinationCode')
     const error = sut.validate({ destinationCode: '019' })
-    expect(error).toEqual(new InvalidParamError('destinationCode'))
+    expect(error).toEqual(new InvalidParamError('019'))
   })
 
   test('Should not return if validation succeeds for selected destinationCode', () => {
@@ -33,7 +33,7 @@ describe('SelectFieldValidation', () => {
       'FaleMais 60',
       'FaleMais 120'], 'plan')
     const error = sut.validate({ plan: 'FaleBem 50' })
-    expect(error).toEqual(new InvalidParamError('plan'))
+    expect(error).toEqual(new InvalidParamError('FaleBem 50'))
   })
 
   test('Should not return if validation succeeds for selected plan', () => {

@@ -12,7 +12,7 @@ export class SelectFieldValidation implements Validation {
 
   validate (input: any): Error {
     if (!this.codesList.includes(input[this.fieldName])) {
-      return new InvalidParamError(input)
+      return new InvalidParamError(input[this.fieldName])
     }
   }
 }
