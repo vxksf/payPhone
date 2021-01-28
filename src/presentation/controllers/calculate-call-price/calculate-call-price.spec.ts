@@ -2,8 +2,19 @@ import { CallPriceCalculator } from '../../../domain/usecases/call-price-calcula
 import { CallPriceCalculationModel } from '../../../domain/models/call-price-calculation'
 import { Plan } from '../../../domain/plans/plans'
 import { CalculateCallController } from './calculate-call-price'
+import { Validation } from '../../protocols/validation'
+import { MissingParamError } from '../../errors/missing-param-error'
 import { HttpRequest } from './calculate-protocols'
-import { serverError, ok } from '../../helpers/http/http-helper'
+import { serverError, badRequest, ok } from '../../helpers/http/http-helper'
+
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): Error {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
 
 const makeCallPriceCalculator = (): CallPriceCalculator => {
   class CallPriceCalculatorStub implements CallPriceCalculator {
@@ -26,14 +37,17 @@ const makeFakeRequest = (): HttpRequest => ({
 interface SutTypes {
   sut: CalculateCallController
   callPriceCalculatorStub: CallPriceCalculator
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const callPriceCalculatorStub = makeCallPriceCalculator()
-  const sut = new CalculateCallController(callPriceCalculatorStub)
+  const validationStub = makeValidation()
+  const sut = new CalculateCallController(callPriceCalculatorStub, validationStub)
   return {
     sut,
-    callPriceCalculatorStub
+    callPriceCalculatorStub,
+    validationStub
   }
 }
 
@@ -50,7 +64,7 @@ describe('CalculateCall Controller', () => {
     })
   })
 
-  test('Should return 500 if Authentication throws', async () => {
+  test('Should return 500 if CallPriceCalculator throws', async () => {
     const { sut, callPriceCalculatorStub } = makeSut()
     jest.spyOn(callPriceCalculatorStub, 'calculate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpResponse = await sut.handle(makeFakeRequest())
@@ -61,5 +75,20 @@ describe('CalculateCall Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok({ calculated: 20.9 }))
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
