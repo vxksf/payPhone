@@ -6,6 +6,6 @@ const envManager = new EnvManager()
 MongoHelper.connect(envManager.getEnvMongoUrl())
   .then(async () => {
     const app = (await import('./config/app')).default
-    app.listen(envManager.getEnvPort(), () => console.log(`Server running at http://localhost:${envManager.getEnvMongoUrl()}`))
+    app.listen(envManager.getEnvPort(), () => console.log(`Server running at http://localhost:${envManager.getEnvPort()}`))
   })
   .catch(console.log)
