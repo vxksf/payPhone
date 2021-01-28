@@ -55,7 +55,7 @@
                 <option value="4">FaleMais 120</option>
             </select>
 
-            <button type="submit" class="button">Calcular</button>
+            <button type="submit" class="button" onClick="calculateCallPrice">Calcular</button>
         </form>
     </main>
     <footer class="main-footer">
@@ -71,5 +71,31 @@
         </nav>
     </footer>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    function calculateCallPrice(){
+
+        const axios = require('axios').default
+        const originCode = document.getElementById('originCode').value
+        const destinationCode = document.getElementById('destinationCode').value
+        const callTime = document.getElementById('callTime').value
+        const plan = document.getElementById('plan').value
+
+        axios.post('/calculate-call-price', {
+            originCode: originCode,
+            destinationCode: destinationCode,
+            callTime: callTime,
+            plan: plan
+        })
+        .then(function (response) {
+            console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+    }
+</script>
 
 </html>
