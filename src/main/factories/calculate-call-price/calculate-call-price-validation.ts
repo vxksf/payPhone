@@ -10,9 +10,9 @@ export const makeCalculateCallPriceValidation = (): ValidationComposite => {
   validations.push(new SelectFieldValidation(['011', '016', '017', '018'], 'originCode'))
   validations.push(new SelectFieldValidation(['011', '016', '017', '018'], 'destinationCode'))
   validations.push(new SelectFieldValidation([
-    Plan.TRADITIONAL.toString(),
-    Plan.FALEMAIS30.toString(),
-    Plan.FALEMAIS60.toString(),
-    Plan.FALEMAIS120.toString()], 'plan'))
+    Plan.TRADITIONAL,
+    Plan.FALEMAIS30,
+    Plan.FALEMAIS60,
+    Plan.FALEMAIS120], 'plan'))
   return new ValidationComposite(validations)
 }

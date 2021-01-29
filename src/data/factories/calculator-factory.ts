@@ -3,7 +3,7 @@ import { CallPriceCalculatorService } from '../../domain/services/call-price-cal
 import { TraditionalCallCalculator, FaleMaisCallCalculator } from '../services/call-price-calculators'
 
 export class CalculatorFactory {
-  static fromPlanType (planType: number): CallPriceCalculatorService {
+  static fromPlanType (planType: string): CallPriceCalculatorService {
     switch (planType) {
       case Plan.TRADITIONAL:
         return new TraditionalCallCalculator()

@@ -96,16 +96,6 @@
         const callTime = document.getElementById('callTime').value
         const plan = document.getElementById('plan').value
 
-        var objReq = {
-            originCode: originCode,
-            destinationCode: destinationCode,
-            callTime: callTime,
-            plan: plan
-        }
-
-        console.log(objReq)
-        return
-
         axios.post('/calculate-call-price', {
             originCode: originCode,
             destinationCode: destinationCode,
@@ -114,33 +104,16 @@
         })
         .then(function (response) {
             console.log(response)
+            const elem = document.getElementById('serverResponse')
+            let parEl = document.createElement('p');
+            parEl.textContent = `Resultado: R$ ${response.data.calculated}`
+            parEl.className = 'parSuccess'
+            elem.insertAdjacentElement('afterbegin', parEl)
         })
         .catch(function (error) {
-            console.log(error)
+            alert('Por favor, entre em contato com o nosso Suporte!')
         })
     }
-
-    // const AJAX = async function (url, uploadData = undefined) {
-    //     try {
-    //         const fetchPro = uploadData
-    //         ? fetch(url, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(uploadData),
-    //             })
-    //         : fetch(url);
-
-    //         const res = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
-    //         const data = await res.json();
-
-    //         if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-    //         return data;
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // };
 
     document.getElementById("btnCalcular").addEventListener("click", calculateCallPrice);
 </script>

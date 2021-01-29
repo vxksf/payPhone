@@ -1,11 +1,11 @@
 enum Plan {
-  TRADITIONAL = 1,
-  FALEMAIS30 = 2,
-  FALEMAIS60 = 3,
-  FALEMAIS120 = 4
+  TRADITIONAL = '1',
+  FALEMAIS30 = '2',
+  FALEMAIS60 = '3',
+  FALEMAIS120 = '4'
 }
 
-function getPlanDescription (index: number): string {
+function getPlanDescription (index: string): string {
   switch (index) {
     case Plan.TRADITIONAL:
       return 'Tradicional'
