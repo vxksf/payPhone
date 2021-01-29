@@ -1,5 +1,6 @@
 import { SelectFieldValidation } from './select-field-validation'
 import { InvalidParamError } from '../../errors/invalid-param-error'
+import { Plan } from '../../../domain/plans/plans'
 
 describe('SelectFieldValidation', () => {
   test('Should return a InvalidParamError if originCode is invalid', () => {
@@ -28,21 +29,21 @@ describe('SelectFieldValidation', () => {
 
   test('Should return a InvalidParamError if plan is invalid', () => {
     const sut = new SelectFieldValidation([
-      'Tradicional',
-      'FaleMais 30',
-      'FaleMais 60',
-      'FaleMais 120'], 'plan')
+      Plan.TRADITIONAL.toString(),
+      Plan.FALEMAIS30.toString(),
+      Plan.FALEMAIS60.toString(),
+      Plan.FALEMAIS120.toString()], 'plan')
     const error = sut.validate({ plan: 'FaleBem 50' })
     expect(error).toEqual(new InvalidParamError('FaleBem 50'))
   })
 
   test('Should not return if validation succeeds for selected plan', () => {
     const sut = new SelectFieldValidation([
-      'Tradicional',
-      'FaleMais 30',
-      'FaleMais 60',
-      'FaleMais 120'], 'plan')
-    const error = sut.validate({ plan: 'FaleMais 30' })
+      Plan.TRADITIONAL.toString(),
+      Plan.FALEMAIS30.toString(),
+      Plan.FALEMAIS60.toString(),
+      Plan.FALEMAIS120.toString()], 'plan')
+    const error = sut.validate({ plan: Plan.FALEMAIS30.toString() })
     expect(error).toBeFalsy()
   })
 })

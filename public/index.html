@@ -55,7 +55,9 @@
                 <option value="4">FaleMais 120</option>
             </select>
 
-            <button type="submit" class="button" onClick="calculateCallPrice">Calcular</button>
+            <button type="button" id="btnCalcular" class="button">Calcular</button>
+
+            <div id="serverResponse"></div>
         </form>
     </main>
     <footer class="main-footer">
@@ -74,14 +76,35 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-
+    
     function calculateCallPrice(){
-
-        const axios = require('axios').default
+        
+        console.log('chamou a funcao');
+        
         const originCode = document.getElementById('originCode').value
         const destinationCode = document.getElementById('destinationCode').value
+        
+        if(originCode == destinationCode) {
+            const elem = document.getElementById('serverResponse')
+            let parEl = document.createElement('p');
+            parEl.textContent = 'Erro: os códigos de DDD não podem ser iguais'
+            parEl.className = 'parError'
+            elem.insertAdjacentElement('afterbegin', parEl)
+            return;
+        }
+
         const callTime = document.getElementById('callTime').value
         const plan = document.getElementById('plan').value
+
+        var objReq = {
+            originCode: originCode,
+            destinationCode: destinationCode,
+            callTime: callTime,
+            plan: plan
+        }
+
+        console.log(objReq)
+        return
 
         axios.post('/calculate-call-price', {
             originCode: originCode,
@@ -96,6 +119,30 @@
             console.log(error)
         })
     }
+
+    // const AJAX = async function (url, uploadData = undefined) {
+    //     try {
+    //         const fetchPro = uploadData
+    //         ? fetch(url, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(uploadData),
+    //             })
+    //         : fetch(url);
+
+    //         const res = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
+    //         const data = await res.json();
+
+    //         if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    //         return data;
+    //     } catch (err) {
+    //         throw err;
+    //     }
+    // };
+
+    document.getElementById("btnCalcular").addEventListener("click", calculateCallPrice);
 </script>
 
 </html>

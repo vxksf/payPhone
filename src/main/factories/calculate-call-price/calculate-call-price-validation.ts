@@ -1,5 +1,6 @@
 import { ValidationComposite, RequiredFieldValidation, SelectFieldValidation } from '../../../presentation/helpers/validators'
 import { Validation } from '../../../presentation/protocols/validation'
+import { Plan } from '../../../domain/plans/plans'
 
 export const makeCalculateCallPriceValidation = (): ValidationComposite => {
   const validations: Validation[] = []
@@ -9,9 +10,9 @@ export const makeCalculateCallPriceValidation = (): ValidationComposite => {
   validations.push(new SelectFieldValidation(['011', '016', '017', '018'], 'originCode'))
   validations.push(new SelectFieldValidation(['011', '016', '017', '018'], 'destinationCode'))
   validations.push(new SelectFieldValidation([
-    'Tradicional',
-    'FaleMais 30',
-    'FaleMais 60',
-    'FaleMais 120'], 'plan'))
+    Plan.TRADITIONAL.toString(),
+    Plan.FALEMAIS30.toString(),
+    Plan.FALEMAIS60.toString(),
+    Plan.FALEMAIS120.toString()], 'plan'))
   return new ValidationComposite(validations)
 }

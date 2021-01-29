@@ -68,7 +68,7 @@ main {
     background: #faacac;
 }
 
-.signup-form button[type="submit"] {
+.signup-form button {
     display: block;
     margin-top: 1rem;
 }
