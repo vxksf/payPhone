@@ -23,3 +23,12 @@ Rode o script 'test' para rodar todos os testes desenvolvidos
 
 # 7 Step 
 Rode o script 'test:ci' para rodar os testes ci e ter também o relatório coverage da aplicação
+
+Important:
+
+# 1 Note
+Se desejar alterar alguma coisa no backend do código, sugiro a utilização do script 'start:dev' junto com o Postman ou Insomnia
+
+# 2 Note
+Este projeto utiliza o padrão de commits, portanto, por gentileza, sempre verifique que os commits estejam de acordo com a seguinte convenção:
+https://www.conventionalcommits.org/en/v1.0.0/
