@@ -80,6 +80,12 @@
     function calculateCallPrice(){
         
         console.log('chamou a funcao');
+
+        let parSuccess = document.getElementById('parSuccess')
+        if(parSuccess instanceof Element) parSuccess.remove()
+
+        let parError = document.getElementById('parError')
+        if(parError instanceof Element) parError.remove()
         
         const originCode = document.getElementById('originCode').value
         const destinationCode = document.getElementById('destinationCode').value
@@ -88,7 +94,7 @@
             const elem = document.getElementById('serverResponse')
             let parEl = document.createElement('p');
             parEl.textContent = 'Erro: os códigos de DDD não podem ser iguais'
-            parEl.className = 'parError'
+            parEl.id = 'parError'
             elem.insertAdjacentElement('afterbegin', parEl)
             return;
         }
@@ -103,11 +109,10 @@
             plan: plan
         })
         .then(function (response) {
-            console.log(response)
             const elem = document.getElementById('serverResponse')
-            let parEl = document.createElement('p');
+            let parEl = document.createElement('p')
             parEl.textContent = `Resultado: R$ ${response.data.calculated}`
-            parEl.className = 'parSuccess'
+            parEl.id = 'parSuccess'
             elem.insertAdjacentElement('afterbegin', parEl)
         })
         .catch(function (error) {

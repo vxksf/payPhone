@@ -2,7 +2,7 @@ import { GeneralCallPriceCalculator } from './general-call-price-calculator'
 import { Plan } from '../../../domain/plans/plans'
 
 export class FaleMaisCallCalculator extends GeneralCallPriceCalculator {
-  async calculate (): Promise<any> {
+  async calculate (): Promise<number> {
     const timePack = this.getTimePacketByPlan(this.data.plan)
     let result = this.data.callTime - timePack
     if (result > 0) {

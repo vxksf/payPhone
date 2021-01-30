@@ -1,7 +1,11 @@
-import { CallFeeModel } from '../../../domain/models/call-fee'
-import { MongoRepository } from '../../../infra/db/mongodb/mongo-repository'
+import { CallFeeModel } from '../../domain/models/call-fee'
+import { MongoRepository } from '../../infra/db/mongodb/mongo-repository'
+import { MongoHelper } from '../../infra/db/helpers/mongo-helper'
+import { EnvManager } from '../../infra/env/env-manager'
 
-export async function populateFeeCollection (): Promise<void> {
+const envManager = new EnvManager()
+
+async function populateFeeCollection (): Promise<void> {
   const fees: CallFeeModel[] = []
   fees[0] = { originCode: '011', destinationCode: '016', minutePrice: 1.9 }
   fees[1] = { originCode: '016', destinationCode: '011', minutePrice: 2.9 }
@@ -14,3 +18,10 @@ export async function populateFeeCollection (): Promise<void> {
     await mongoRepository.add(fee)
   }
 }
+
+MongoHelper.connect(envManager.getEnvMongoUrl())
+  .then(async () => {
+    await populateFeeCollection()
+    console.log('Database populado com sucesso')
+  })
+  .catch(console.log)

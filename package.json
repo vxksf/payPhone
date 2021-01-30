@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack && node dist/bundle.js",
     "start:dev": "sucrase-node src/main/server.ts",
+    "populate-database": "sucrase-node src/main/utils/populate-database.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
