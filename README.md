@@ -1,7 +1,4 @@
-Author: Kelvin Felix
-Mail: kelvin.felix2502@outlook.com
-Cel: (11) 983276182
-Desc: Esta é uma aplicação desenvolvida para o processo seletivo da Vórtx
+
 
 # 1 Step
 Esta aplicação utiliza MongoDB, então abra o arquivo .env e coloque o endpoint do seu database
